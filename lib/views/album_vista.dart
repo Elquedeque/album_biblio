@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+
+class Album {
+  String? id = "0000";
+  String titulo = "OK Computer";
+  String artista = "Radiohead";
+  int anio = 1997;
+  String gender = "Rock";
+}
+
+class AlbumVista extends StatelessWidget {
+  final Album album = Album();
+  AlbumVista({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Datos del Album"),
+      ),
+      body: Center(
+        child: SizedBox(
+          width: 500,
+          height: 500,
+          child: Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(width: 200, height: 200, child: Placeholder()),
+                const Divider(thickness: 3),
+                Container(
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Título: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      Text(
+                        album.titulo,
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 25.0,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onTertiaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Container(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Cantante: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        album.artista,
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 20.0,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Año de lanzamiento: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        album.anio.toString(),
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12.0,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Género: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        album.gender,
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12.0,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
