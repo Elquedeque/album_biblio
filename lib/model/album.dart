@@ -12,17 +12,17 @@ enum Genre {
   undefined,
 }
 
-Map<Genre, String> genres = {
+Map genres = {
   Genre.pop: "Pop",
-  Genre.latin: "Música latina",
-  Genre.rock: "Rock",
+  Genre.blues: "Blues",
   Genre.classic: "Música clásica",
   Genre.hiphop: "Hip hop",
-  Genre.rap: "Rap",
-  Genre.metal: "Rock-Metal",
   Genre.jazz: "Jazz",
-  Genre.blues: "Blues",
+  Genre.latin: "Música latina",
+  Genre.metal: "Rock-Metal",
+  Genre.rap: "Rap",
   Genre.reageton: "Reageton",
+  Genre.rock: "Rock",
   Genre.undefined: "No definido",
 };
 
@@ -32,7 +32,6 @@ class Album {
   String artista;
   int anio;
   Genre genre;
-
   Album({
     this.id,
     required this.titulo,
@@ -40,7 +39,6 @@ class Album {
     required this.anio,
     required this.genre,
   });
-
   Album.vacio({
     this.id = "0",
     this.titulo = "",
@@ -48,28 +46,9 @@ class Album {
     this.anio = 0,
     this.genre = Genre.undefined,
   });
-
-  // Getter para obtener el género en formato de cadena
-  String get genero => genres[genre] ?? "Desconocido";
-
+  String get genero => genres[genre];
   @override
   String toString() {
-    return "Album id: $id, titulo: $titulo, artista, $artista, anio: $anio, gender:${genre.name}}";
-  }
-}
-
-class AlbumBiblio {
-  final List<Album> _listaAlbumes = [];
-
-  AlbumBiblio();
-
-  List<Album> get albumes => _listaAlbumes;
-
-  void addAlbum(Album album) {
-    _listaAlbumes.add(album);
-  }
-
-  Album getAlbumByIndex(int index) {
-    return _listaAlbumes[index];
+    return "Album{id: $id, titulo: $titulo, artista, $artista, anio: $anio,gender:${genre.name}}";
   }
 }

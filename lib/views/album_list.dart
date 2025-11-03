@@ -1,5 +1,9 @@
+import 'package:album_biblio/views/eliminacion.dart';
 import 'package:flutter/material.dart';
 import '../model/albumbiblio.dart';
+import 'album_vista.dart';
+import 'perfil_usuario.dart';
+import 'acerca_de.dart';
 
 class AlbumLista extends StatefulWidget {
   const AlbumLista({super.key});
@@ -12,6 +16,14 @@ class _AlbumListaState extends State<AlbumLista> {
   int albumSeleccionado = 0;
   late AlbumBiblio albumes;
 
+  void mostrarAlbum(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AlbumVista(album: albumes.getAlbumByIndex(index)),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -21,7 +33,7 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "The Dark Side of the Moon",
         artista: "Pink Floyd",
         anio: 1973,
-        genre: "Rock",
+        genre: Genre.rock,
       ),
     );
     albumes.addAlbum(
@@ -29,7 +41,7 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "Pet Sounds",
         artista: "The Beach Boys",
         anio: 1966,
-        genre: "Rock",
+        genre: Genre.rock,
       ),
     );
     albumes.addAlbum(
@@ -37,7 +49,7 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "OK Computer",
         artista: "Radiohead",
         anio: 1997,
-        genre: "Rock",
+        genre: Genre.rock,
       ),
     );
     albumes.addAlbum(
@@ -45,18 +57,23 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "Who's next",
         artista: "The Who",
         anio: 1971,
-        genre: "Rock",
+        genre: Genre.rock,
       ),
     );
     albumes.addAlbum(
-      Album(titulo: "Nevermind", artista: "Nirvana", anio: 1991, genre: "Rock"),
+      Album(
+        titulo: "Nevermind",
+        artista: "Nirvana",
+        anio: 1991,
+        genre: Genre.rock,
+      ),
     );
     albumes.addAlbum(
       Album(
         titulo: "Off the Wall",
         artista: "Michael Jackson",
         anio: 1979,
-        genre: "Pop",
+        genre: Genre.pop,
       ),
     );
     albumes.addAlbum(
@@ -64,7 +81,7 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "Blonde on Blonde",
         artista: "Bob Dylan",
         anio: 1966,
-        genre: "Blues Rock",
+        genre: Genre.rock,
       ),
     );
     albumes.addAlbum(
@@ -72,7 +89,7 @@ class _AlbumListaState extends State<AlbumLista> {
         titulo: "Born to Run",
         artista: "Bruce Springsteen",
         anio: 1975,
-        genre: "Blues Rock",
+        genre: Genre.rock,
       ),
     );
   }
@@ -88,12 +105,39 @@ class _AlbumListaState extends State<AlbumLista> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Biblioteca de Álbumes"),
+        // Implementación del menú de acciones (Código 7-26)
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => <PopupMenuEntry>[
+              const PopupMenuItem(value: 1, child: Text("Perfíl del usuario")),
+              const PopupMenuItem(value: 2, child: Text("Acerca de ...")),
+            ],
+            onSelected: (value) {
+              setState(() {
+                if (value == 1) {
+                  // Navegación al Perfil (Código 7-26)
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const PerfilUsuario(),
+                    ),
+                  );
+                } else if (value == 2) {
+                  // Navegación a AcercaDe (Actividad Complementaria 4a)
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AcercaDe()),
+                  );
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: ListTile.divideTiles(
           context: context,
           tiles: crearLista(),
+          // Se mantiene el color original de su código:
           color: const Color.fromARGB(255, 31, 32, 34),
         ).toList(),
       ),
@@ -114,7 +158,8 @@ class _AlbumListaState extends State<AlbumLista> {
           leading: const Icon(Icons.album),
           title: Text(album.titulo),
           subtitle: Text(
-            "${album.artista}, Año: ${album.anio}, Género: ${album.genre}",
+            // Se utiliza el getter .genero
+            "${album.artista}, Año: ${album.anio}, Género: ${album.genero}",
           ),
           trailing: SizedBox(
             width: 120,
@@ -123,11 +168,13 @@ class _AlbumListaState extends State<AlbumLista> {
               child: crearButtonsBar(i),
             ),
           ),
+          // Se mantienen sus estilos originales:
           textColor: const Color.fromARGB(255, 48, 47, 47),
           tileColor: const Color.fromARGB(255, 172, 245, 200),
           selectedColor: const Color.fromARGB(255, 253, 249, 249),
           selectedTileColor: const Color.fromARGB(255, 35, 70, 24),
-          selected: (albumSeleccionado == i),
+          selected:
+              (albumSeleccionado == i), // Se mantiene su variable original
           onTap: () => albumTapped(i),
         ),
       );
@@ -147,7 +194,10 @@ class _AlbumListaState extends State<AlbumLista> {
       children: [
         IconButton(
           tooltip: "Ver",
-          onPressed: () {},
+          onPressed: () {
+            // Se implementa la navegación al AlbumVista (Código 7-24)
+            mostrarAlbum(context, index);
+          },
           icon: const Icon(Icons.search),
         ),
         IconButton(
@@ -157,7 +207,19 @@ class _AlbumListaState extends State<AlbumLista> {
         ),
         IconButton(
           tooltip: "Eliminar",
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context)
+                .push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        Eliminacion(albumes: albumes, index: index),
+                  ),
+                )
+                .then((_) {
+                  // Actualiza la lista al regresar
+                  setState(() {});
+                });
+          },
           icon: const Icon(Icons.delete),
         ),
       ],

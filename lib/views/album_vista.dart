@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-
-class Album {
-  String? id = "0000";
-  String titulo = "OK Computer";
-  String artista = "Radiohead";
-  int anio = 1997;
-  String gender = "Rock";
-}
+import '../model/albumbiblio.dart';
 
 class AlbumVista extends StatelessWidget {
-  final Album album = Album();
-  AlbumVista({super.key});
+  final Album album;
+  const AlbumVista({super.key, required this.album}); // Constructor modificado
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +112,9 @@ class AlbumVista extends StatelessWidget {
                           fontSize: 12,
                         ),
                       ),
+                      // Usar el getter .genero
                       Text(
-                        album.gender,
+                        album.genero,
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontSize: 12.0,

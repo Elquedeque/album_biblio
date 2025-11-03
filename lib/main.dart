@@ -1,5 +1,3 @@
-//import 'package:album_biblio/views/perfil_usuario.dart';
-//import 'package:album_biblio/views/album_vista.dart';
 import 'package:album_biblio/views/album_list.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 26, 247, 55),
