@@ -1,3 +1,6 @@
+import 'album.dart';
+import 'package:flutter/material.dart';
+
 enum Genre {
   pop,
   latin,
@@ -26,47 +29,31 @@ Map<Genre, String> genres = {
   Genre.undefined: "No definido",
 };
 
-class Album {
-  String? id;
-  String titulo;
-  String artista;
-  int anio;
-  Genre genre;
-
-  Album({
-    this.id,
-    required this.titulo,
-    required this.artista,
-    required this.anio,
-    required this.genre,
-  });
-
-  Album.vacio({
-    this.id = "0",
-    this.titulo = "",
-    this.artista = "",
-    this.anio = 0,
-    this.genre = Genre.undefined,
-  });
-
-  // Getter para obtener el género en formato de cadena
-  String get genero => genres[genre] ?? "Desconocido";
-
-  @override
-  String toString() {
-    return "Album id: $id, titulo: $titulo, artista, $artista, anio: $anio, gender:${genre.name}}";
-  }
-}
-
-class AlbumBiblio {
+class AlbumBiblio extends ChangeNotifier {
   final List<Album> _listaAlbumes = [];
-
   AlbumBiblio();
-
   List<Album> get albumes => _listaAlbumes;
-
   void addAlbum(Album album) {
     _listaAlbumes.add(album);
+    notifyListeners();
+  }
+
+  bool updateAlbum(int index, Album album) {
+    if (index >= 0 && index < _listaAlbumes.length) {
+      _listaAlbumes[index] = album;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  bool removeAlbum(int index) {
+    if (index >= 0 && index < _listaAlbumes.length) {
+      _listaAlbumes.removeAt(index);
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 
   Album getAlbumByIndex(int index) {

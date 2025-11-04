@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/albumbiblio.dart';
+import '../model/album.dart';
 
 class AlbumVista extends StatelessWidget {
   final Album album;
@@ -114,7 +114,7 @@ class AlbumVista extends StatelessWidget {
                       ),
                       // Usar el getter .genero
                       Text(
-                        album.genero,
+                        album.generos,
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontSize: 12.0,

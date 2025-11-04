@@ -1,8 +1,10 @@
-import 'package:album_biblio/views/eliminacion.dart';
 import 'package:flutter/material.dart';
 import '../model/albumbiblio.dart';
+import '../model/album.dart';
 import 'album_vista.dart';
 import 'perfil_usuario.dart';
+import 'album_form.dart';
+import 'package:provider/provider.dart';
 import 'acerca_de.dart';
 
 class AlbumLista extends StatefulWidget {
@@ -16,84 +18,6 @@ class _AlbumListaState extends State<AlbumLista> {
   int albumSeleccionado = 0;
   late AlbumBiblio albumes;
 
-  void mostrarAlbum(BuildContext context, int index) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AlbumVista(album: albumes.getAlbumByIndex(index)),
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    albumes = AlbumBiblio();
-    albumes.addAlbum(
-      Album(
-        titulo: "The Dark Side of the Moon",
-        artista: "Pink Floyd",
-        anio: 1973,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Pet Sounds",
-        artista: "The Beach Boys",
-        anio: 1966,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "OK Computer",
-        artista: "Radiohead",
-        anio: 1997,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Who's next",
-        artista: "The Who",
-        anio: 1971,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Nevermind",
-        artista: "Nirvana",
-        anio: 1991,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Off the Wall",
-        artista: "Michael Jackson",
-        anio: 1979,
-        genre: Genre.pop,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Blonde on Blonde",
-        artista: "Bob Dylan",
-        anio: 1966,
-        genre: Genre.rock,
-      ),
-    );
-    albumes.addAlbum(
-      Album(
-        titulo: "Born to Run",
-        artista: "Bruce Springsteen",
-        anio: 1975,
-        genre: Genre.rock,
-      ),
-    );
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -101,6 +25,7 @@ class _AlbumListaState extends State<AlbumLista> {
 
   @override
   Widget build(BuildContext context) {
+    albumes = Provider.of<AlbumBiblio>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -132,17 +57,31 @@ class _AlbumListaState extends State<AlbumLista> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(10),
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: crearLista(),
-          // Se mantiene el color original de su código:
-          color: const Color.fromARGB(255, 31, 32, 34),
-        ).toList(),
-      ),
+
+      body: (albumes.albumes.isNotEmpty)
+          ? ListView(
+              padding: const EdgeInsets.all(10),
+              children: ListTile.divideTiles(
+                context: context,
+                tiles: crearLista(),
+                color: const Color.fromARGB(255, 31, 32, 34),
+              ).toList(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    capturarAlbum(context);
+                  },
+                  child: const Text("Agregar Album"),
+                ),
+              ),
+            ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          capturarAlbum(context);
+        },
         tooltip: 'Nuevo album',
         child: const Icon(Icons.add),
       ),
@@ -159,7 +98,7 @@ class _AlbumListaState extends State<AlbumLista> {
           title: Text(album.titulo),
           subtitle: Text(
             // Se utiliza el getter .genero
-            "${album.artista}, Año: ${album.anio}, Género: ${album.genero}",
+            "${album.artista}, Año: ${album.anio}, Género: ${album.generos}",
           ),
           trailing: SizedBox(
             width: 120,
@@ -202,27 +141,53 @@ class _AlbumListaState extends State<AlbumLista> {
         ),
         IconButton(
           tooltip: "Editar",
-          onPressed: () {},
+          onPressed: () {
+            actualizarAlbum(context, index);
+          },
           icon: const Icon(Icons.edit),
         ),
         IconButton(
           tooltip: "Eliminar",
           onPressed: () {
-            Navigator.of(context)
-                .push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        Eliminacion(albumes: albumes, index: index),
-                  ),
-                )
-                .then((_) {
-                  // Actualiza la lista al regresar
-                  setState(() {});
-                });
+            removerAlbum(index);
           },
           icon: const Icon(Icons.delete),
         ),
       ],
     );
+  }
+
+  Future<void> capturarAlbum(BuildContext context) async {
+    final Album? album = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AlbumForm()),
+    );
+    if (album != null) {
+      albumes.addAlbum(album);
+    }
+  }
+
+  void mostrarAlbum(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AlbumVista(album: albumes.getAlbumByIndex(index)),
+      ),
+    );
+  }
+
+  Future<void> actualizarAlbum(BuildContext context, int index) async {
+    Album? album = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AlbumForm(album: albumes.getAlbumByIndex(index)),
+      ),
+    );
+    if (album != null) {
+      albumes.updateAlbum(index, album);
+    }
+  }
+
+  bool removerAlbum(int index) {
+    return albumes.removeAlbum(index);
   }
 }
