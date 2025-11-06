@@ -32,7 +32,9 @@ class Album {
   late String _artista;
   late int _anio;
   late Genre _genre;
+
   Album(this._titulo, this._artista, this._anio, this._genre);
+
   Album.vacio() {
     _titulo = "";
     _artista = "";
@@ -45,10 +47,25 @@ class Album {
   int get anio => _anio;
   Genre get genre => _genre;
   String get generos => genres[_genre];
+
   set titulo(String titulo) => _titulo;
   set artista(String artista) => _artista;
   set anio(int anio) => _anio;
   set genre(Genre genero) => _genre;
+
+  Album.fromJson(Map<String, dynamic> json)
+    : _titulo = json['titulo'],
+      _artista = json['artista'],
+      _anio = json['anio'],
+      _genre = Genre.values.byName(json['genre']);
+
+  Map<String, dynamic> toJson() => {
+    'titulo': _titulo,
+    'artista': _artista,
+    'anio': _anio,
+    'gender': _genre.name,
+  };
+
   @override
   String toString() {
     return "Album{id: $_id, titulo: $_titulo, artista, $_artista, anio: $_anio, genre:${_genre.name}}";
