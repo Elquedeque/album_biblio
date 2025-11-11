@@ -114,7 +114,7 @@ class AlbumVista extends StatelessWidget {
                       ),
                       // Usar el getter .genero
                       Text(
-                        album.generos,
+                        album.genero,
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontSize: 12.0,

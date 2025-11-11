@@ -17,10 +17,12 @@ class _AlbumFormState extends State<AlbumForm> {
   final TextEditingController ctrGender = TextEditingController();
   var selectedGenre = Genre.undefined;
   late final String tituloForm;
+  int? id;
 
   @override
   void initState() {
     if (widget.album != null) {
+      id = widget.album!.id;
       ctrTitulo.text = widget.album!.titulo;
       ctrArtista.text = widget.album!.artista;
       ctrAnio.text = widget.album!.anio.toString();
@@ -146,10 +148,11 @@ class _AlbumFormState extends State<AlbumForm> {
       return;
     }
     final Album album = Album(
-      ctrTitulo.text,
-      ctrArtista.text,
-      int.parse(ctrAnio.text),
-      selectedGenre,
+      id: id,
+      titulo: ctrTitulo.text,
+      artista: ctrArtista.text,
+      anio: int.parse(ctrAnio.text),
+      genre: selectedGenre,
     );
     Navigator.pop(context, album);
   }

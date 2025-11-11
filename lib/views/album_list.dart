@@ -6,6 +6,7 @@ import 'perfil_usuario.dart';
 import 'album_form.dart';
 import 'package:provider/provider.dart';
 import 'acerca_de.dart';
+import '../model/manejadordatabase.dart';
 
 class AlbumLista extends StatefulWidget {
   const AlbumLista({super.key});
@@ -15,17 +16,32 @@ class AlbumLista extends StatefulWidget {
 }
 
 class _AlbumListaState extends State<AlbumLista> {
-  int albumSeleccionado = 0;
+  bool dbRead = false;
+  int selectedAlbum = 0;
   late AlbumBiblio albumes;
+  late ManejadorDatabase manejadorDB;
+
+  @override
+  void initState() {
+    super.initState();
+    manejadorDB = ManejadorDatabase.getInstance();
+  }
 
   @override
   void dispose() {
+    manejadorDB.cerrarDB();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     albumes = Provider.of<AlbumBiblio>(context);
+    if (!dbRead) {
+      manejadorDB.albumes().then((value) {
+        albumes.setAlbumes(value);
+        dbRead = true;
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -58,7 +74,9 @@ class _AlbumListaState extends State<AlbumLista> {
         ],
       ),
 
-      body: (albumes.albumes.isNotEmpty)
+      body: !dbRead
+          ? const Center(child: CircularProgressIndicator())
+          : (albumes.albumes.isNotEmpty)
           ? ListView(
               padding: const EdgeInsets.all(10),
               children: ListTile.divideTiles(
@@ -98,7 +116,7 @@ class _AlbumListaState extends State<AlbumLista> {
           title: Text(album.titulo),
           subtitle: Text(
             // Se utiliza el getter .genero
-            "${album.artista}, Año: ${album.anio}, Género: ${album.generos}",
+            "${album.artista}, Año: ${album.anio}, Género: ${album.genero}",
           ),
           trailing: SizedBox(
             width: 120,
@@ -112,8 +130,7 @@ class _AlbumListaState extends State<AlbumLista> {
           tileColor: const Color.fromARGB(255, 172, 245, 200),
           selectedColor: const Color.fromARGB(255, 253, 249, 249),
           selectedTileColor: const Color.fromARGB(255, 35, 70, 24),
-          selected:
-              (albumSeleccionado == i), // Se mantiene su variable original
+          selected: (selectedAlbum == i), // Se mantiene su variable original
           onTap: () => albumTapped(i),
         ),
       );
@@ -123,7 +140,7 @@ class _AlbumListaState extends State<AlbumLista> {
 
   void albumTapped(int i) {
     setState(() {
-      albumSeleccionado = i;
+      selectedAlbum = i;
     });
   }
 
@@ -162,7 +179,10 @@ class _AlbumListaState extends State<AlbumLista> {
       context,
       MaterialPageRoute(builder: (context) => const AlbumForm()),
     );
+
     if (album != null) {
+      int id = await manejadorDB.insertarAlbum(album);
+      album.id = id;
       albumes.addAlbum(album);
     }
   }
@@ -182,12 +202,17 @@ class _AlbumListaState extends State<AlbumLista> {
         builder: (context) => AlbumForm(album: albumes.getAlbumByIndex(index)),
       ),
     );
+
     if (album != null) {
       albumes.updateAlbum(index, album);
+      manejadorDB.actualizarAlbum(album);
     }
   }
 
   bool removerAlbum(int index) {
-    return albumes.removeAlbum(index);
+    Album album = albumes.getAlbumByIndex(index);
+    bool eliminado = albumes.removeAlbum(index);
+    manejadorDB.removerAlbum(album.id!);
+    return eliminado;
   }
 }
