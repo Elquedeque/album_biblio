@@ -1,9 +1,19 @@
-import 'package:album_biblio/views/album_list.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:album_biblio/model/albumbiblio.dart';
+import 'package:album_biblio/views/pagina_login.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'views/pagina_login.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseUIAuth.configureProviders([EmailAuthProvider()]);
   runApp(
     ChangeNotifierProvider(create: (_) => AlbumBiblio(), child: const MyApp()),
   );
@@ -23,7 +33,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: AlbumLista(),
+      home: const PaginaLogin(),
     );
   }
 }
