@@ -1,7 +1,12 @@
+import 'package:album_biblio/views/pagina_edit_perfil.dart';
 import 'package:flutter/material.dart';
+import 'pagina_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'pagina_edit_perfil.dart';
 
 class PerfilUsuario extends StatelessWidget {
-  const PerfilUsuario({super.key});
+  final User? usuario;
+  const PerfilUsuario({super.key, this.usuario});
   final String name = "Francisco Salazar Figueroa";
   final String puesto = "Estudiante de Ingenieria en Informatica";
   final String email = "Fasf040412@gmail.com";
@@ -11,118 +16,157 @@ class PerfilUsuario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          "Perfil de Usuario",
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 400,
-            height: 600,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
-              border: Border.all(width: 3),
-              borderRadius: BorderRadius.circular(100),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.shadow,
-                  spreadRadius: 1,
-                  blurRadius: 10,
+    return (usuario == null)
+        ? const PaginaLogin()
+        : Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              title: Text(
+                "Perfil de usuario",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
-              ],
+              ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 140,
-                  height: 180,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaginaEditPerfil(usuario: usuario),
+                  ),
+                );
+              },
+              child: const Icon(Icons.edit),
+            ),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 400,
+                  height: 600,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onInverseSurface,
+                    color: Theme.of(context).colorScheme.inversePrimary,
                     border: Border.all(width: 3),
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: BorderRadius.circular(50),
                     boxShadow: [
                       BoxShadow(
                         color: Theme.of(context).colorScheme.shadow,
-                        spreadRadius: 3,
-                        blurRadius: 30,
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset('assets/images/profile.jpg'),
-                  ),
-                ),
-                const Divider(),
-                Text(
-                  textAlign: TextAlign.center,
-                  name,
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    shadows: [
-                      Shadow(
-                        color: Theme.of(context).colorScheme.shadow,
+                        spreadRadius: 1,
                         blurRadius: 10,
                       ),
                     ],
                   ),
-                ),
-                const Divider(),
-                Container(
-                  decoration: BoxDecoration(
-                    border: BoxBorder.fromLTRB(
-                      bottom: const BorderSide(
-                        width: 3,
-                        color: Colors.black,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    puesto,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const Divider(),
-                Row(
-                  children: [
-                    const Spacer(flex: 1),
-                    Expanded(
-                      flex: 10,
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        description,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onInverseSurface,
+                          border: Border.all(width: 2),
+                          borderRadius: BorderRadius.circular(100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).colorScheme.shadow,
+                              spreadRadius: 1,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child:
+                              (usuario!.photoURL != null &&
+                                  usuario!.photoURL != "")
+                              ? Image.network(usuario!.photoURL ?? "")
+                              : Image.asset('assets/images/profile.jpg'),
                         ),
                       ),
-                    ),
-                    const Spacer(flex: 1),
-                  ],
+                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            usuario!.displayName ?? name,
+                            style: Theme.of(context).textTheme.headlineMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  shadows: [
+                                    Shadow(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.shadow,
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: BoxBorder.fromLTRB(
+                            bottom: const BorderSide(
+                              width: 2,
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          puesto,
+                          style: Theme.of(context).textTheme.headlineSmall!
+                              .copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      const Divider(),
+                      Row(
+                        children: [
+                          const Spacer(flex: 1),
+                          Expanded(flex: 10, child: Text(description)),
+                          const Spacer(flex: 1),
+                        ],
+                      ),
+                      const Divider(),
+                      Text(
+                        "Contacto:",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Correo electrónico: "),
+                          const SizedBox(width: 10),
+                          Text(usuario!.email ?? email),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Teléfono: "),
+                          const SizedBox(width: 10),
+                          Text(usuario!.phoneNumber ?? tel),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("ID de Usuario: "),
+                          const SizedBox(width: 10),
+                          Text(usuario!.uid),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const Divider(),
-                Text(
-                  "Contacto:",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                Text('Email: $email\nTel: $tel', textAlign: TextAlign.center),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }

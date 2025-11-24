@@ -7,6 +7,7 @@ import 'album_form.dart';
 import 'package:provider/provider.dart';
 import 'acerca_de.dart';
 import '../model/manejadordatabase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AlbumLista extends StatefulWidget {
   const AlbumLista({super.key});
@@ -56,10 +57,11 @@ class _AlbumListaState extends State<AlbumLista> {
             onSelected: (value) {
               setState(() {
                 if (value == 1) {
-                  // Navegación al Perfil (Código 7-26)
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const PerfilUsuario(),
+                      builder: (context) => PerfilUsuario(
+                        usuario: FirebaseAuth.instance.currentUser,
+                      ),
                     ),
                   );
                 } else if (value == 2) {

@@ -64,6 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '23527963672',
     projectId: 'album-biblio-91dce',
     storageBucket: 'album-biblio-91dce.firebasestorage.app',
+    androidClientId: '23527963672-nsodh45fatrt4pg5imor26jct69rnsvc.apps.googleusercontent.com',
+    iosClientId: '23527963672-2mbcuj8qn7v6hmtce7hfqne790a939dd.apps.googleusercontent.com',
     iosBundleId: 'com.example.albumBiblio',
   );
 
@@ -73,6 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '23527963672',
     projectId: 'album-biblio-91dce',
     storageBucket: 'album-biblio-91dce.firebasestorage.app',
+    androidClientId: '23527963672-nsodh45fatrt4pg5imor26jct69rnsvc.apps.googleusercontent.com',
+    iosClientId: '23527963672-2mbcuj8qn7v6hmtce7hfqne790a939dd.apps.googleusercontent.com',
     iosBundleId: 'com.example.albumBiblio',
   );
 

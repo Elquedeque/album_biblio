@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'views/pagina_login.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'model/etiquetas_esp.dart';
+import 'package:firebase_auth/firebase_auth.dart'
+    hide PhoneAuthProvider, EmailAuthProvider;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseUIAuth.configureProviders([EmailAuthProvider()]);
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+    PhoneAuthProvider(),
+    GoogleProvider(clientId: DefaultFirebaseOptions.currentPlatform.appId),
+  ]);
   runApp(
     ChangeNotifierProvider(create: (_) => AlbumBiblio(), child: const MyApp()),
   );
@@ -34,6 +40,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const PaginaLogin(),
+      localizationsDelegates: [
+        FirebaseUILocalizations.withDefaultOverrides(const EtiquetasEsp()),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        FirebaseUILocalizations.delegate,
+      ],
     );
   }
 }
